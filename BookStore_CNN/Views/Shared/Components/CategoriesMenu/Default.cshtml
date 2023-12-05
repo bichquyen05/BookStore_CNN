@@ -1,0 +1,5 @@
+﻿@model IEnumerable<BookStore_CNN.ViewModels.MenuCategories>
+@foreach (var item in Model)
+{
+    <li><a asp-controller="Products" asp-action="ProductByCategories" asp-route-loai="@item.Id">@item.Name</a></li>
+}

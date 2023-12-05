@@ -1,0 +1,15 @@
+﻿@model IEnumerable<Category>
+@{
+    Layout = null;
+}
+
+<div class="sidebar__item">
+    <h4>Danh mục sách</h4>
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li><a href="#">@item.Name</a></li>
+            @* <li><a asp-controller="Categories" asp-action="ProductCategory" asp-route-id="@item.Id">@item.Name</a></li> *@
+        }
+    </ul>
+</div>
