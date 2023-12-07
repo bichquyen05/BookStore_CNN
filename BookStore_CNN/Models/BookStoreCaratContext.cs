@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using BookStore_CNN.ViewModels;
 
 namespace BookStore_CNN.Models
 {
@@ -33,7 +34,7 @@ namespace BookStore_CNN.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=BookStore-Carat;Integrated Security=True;Encrypt=False");
+                optionsBuilder.UseSqlServer("Data Source=LAPTOP-AD60VGJJ\\SQLEXPRESS;Initial Catalog=BookStore_Carat;Integrated Security=True");
             }
         }
 
@@ -200,5 +201,7 @@ namespace BookStore_CNN.Models
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        public DbSet<BookStore_CNN.ViewModels.ProductVM>? ProductVM { get; set; }
     }
 }
