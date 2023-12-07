@@ -18,8 +18,8 @@
                 <div class="footer__widget">
                     <h6>Liên kết</h6>
                     <ul>
-                        <li><a href="#">Giới Thiệu</a></li>
-                        <li><a href="#">Liên Hệ</a></li>
+                        <li><a href="#">Liên hệ - Tư vấn</a></li>
+                        <li><a href="#">Chính sách thanh toán</a></li>
                         <li><a href="#">Chính sách đổi trả</a></li>
                         <li><a href="#">Chính sách giao hàng</a></li>
                         <li><a href="#">Chính sách bảo mật</a></li>
@@ -27,9 +27,9 @@
                     <ul>
                         <li><a href="#">BookStore-Carat</li>
                         <li><a href="#">Dịch vụ của Carat</a></li>
-                        <li><a href="#">Liên hệ</a></li>
-                        <li><a href="#">Đổi mới</a></li>
-                        <li><a href="#">Cam kết</a></li>
+                        <li><a href="#">Chương trình ưu đãi</a></li>
+                        <li><a href="#">Thông tin đổi mới</a></li>
+                        <li><a href="#">Cam kết chất lượng</a></li>
                     </ul>
                 </div>
             </div>
@@ -37,10 +37,19 @@
                 <div class="footer__widget">
                     <h6>Đăng ký nhận thông tin từ BookStore-Carat</h6>
                     <p>Nhận thông tin cập nhật qua E-mail về cửa hàng mới nhất của chúng tôi và các ưu đãi đặc biệt.</p>
-                    <form action="#">
-                        <input type="text" placeholder="Email của bạn">
+                    <form asp-controller="Home" asp-action="JoinOur" method="post">
+                        <input type="text" name="email" placeholder="Email của bạn">                        
                         <button type="submit" class="site-btn">Đăng ký</button>
                     </form>
+                    @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+                    {
+                        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(TempData["Message"] as string))
+                    {
+                        <div class="alert alert-success">@TempData["Message"]</div>
+                    }
                     <div class="footer__widget__social">
                         <a href="#"><i class="fa fa-facebook"></i></a>
                         <a href="#"><i class="fa fa-instagram"></i></a>

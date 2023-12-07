@@ -13,7 +13,7 @@
     <meta name="keywords" content="Ogani, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ogani | Template</title>
+    <title>Detail</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
@@ -43,10 +43,10 @@
         </div>
         <div class="humberger__menu__cart">
             <ul>
-                <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+                <li><a href="#"><i class="fa fa-heart"></i> </a></li>
+                <li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-bag"></i> </a></li>
             </ul>
-            <div class="header__cart__price">item: <span>$150.00</span></div>
+            @* <div class="header__cart__price">Tổng: <span> @ViewBag.Total ₫</span></div> *@
         </div>
         <div class="humberger__menu__widget">            
             <div class="header__top__right__auth">
@@ -123,10 +123,10 @@
                 <div class="col-lg-3">
                     <div class="header__cart">
                         <ul>
-                            <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                            <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+                            <li><a href="#"><i class="fa fa-heart"></i> </a></li>
+                            <li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-bag"></i> </a></li>
                         </ul>
-                        <div class="header__cart__price">item: <span>$150.00</span></div>
+                        @* <div class="header__cart__price">Tổng: <span>@ViewBag.Total ₫</span></div> *@
                     </div>
                 </div>
             </div>
@@ -155,7 +155,7 @@
                     <div class="hero__search">
                         <div class="hero__search__form">
                             <form asp-controller="Products" asp-action="Search">                                
-                                <input type="text" name="keyword" placeholder="Nhập tên sách...">
+                                <input type="text" name="keyword" placeholder="Nhập tên sách">
                                 <button type="submit" class="site-btn">TÌM KIẾM</button>
                             </form>
                         </div>
@@ -224,9 +224,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="primary-btn">Thêm vào giỏ hàng</button>
-                            <a href="#" class="heart-icon"><span class="icon_heart_alt"></span></a>
-                        </form>                        
+                            <button class="primary-btn">Thêm vào giỏ hàng</button>                            
+                        </form> 
+                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@Model.Id" asp-route-qty="1" class="primary-btn">Mua ngay</a>
                         <ul>
                             <li><b>Tác giả</b> <span>@Model.TacGia</span></li>
                             <li><b>Thể loại</b> <span>@ViewBag.loai</span></li>

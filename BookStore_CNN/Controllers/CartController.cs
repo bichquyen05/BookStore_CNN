@@ -1,5 +1,8 @@
 ﻿using BookStore_CNN.Models;
+using BookStore_CNN.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Security.Cryptography;
 
 namespace BookStore_CNN.Controllers
 {
@@ -14,15 +17,18 @@ namespace BookStore_CNN.Controllers
         public List<CartItem> Carts
         {
             get
-            {
+            {                
                 var data = HttpContext.Session.Get<List<CartItem>>("GioHang") ?? new List<CartItem>();
-                ViewBag.Discount = Discount();
-                ViewBag.Total = CalculateTotal()-Discount();              
+                ViewBag.TotalItem = data.Sum(p => p.iSoLuong);
+                ViewBag.TotalPrv = @String.Format("{0:0,0}", CalculateTotal());
+                ViewBag.Discount = @String.Format("{0:0,0}", Discount());
+                ViewBag.Total = @String.Format("{0:0,0}", CalculateTotal() - Discount());                
                 return data;
             }
         }
         public IActionResult Index()
         {
+            ViewBag.TongSoLuong = TotalProduct();
             return View(Carts);
         }
 
@@ -54,7 +60,7 @@ namespace BookStore_CNN.Controllers
             HttpContext.Session.Set("GioHang", gioHang);
             return RedirectToAction("Index");
         }
-        
+                
         public ActionResult RemoveCartItem( int itemid)
         {            
             var gioHang = Carts;
@@ -84,9 +90,105 @@ namespace BookStore_CNN.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult DeleteCart()
+        {
+            var gioHang = Carts;
+            gioHang.Clear();
+            HttpContext.Session.Set("GioHang", gioHang);
+            return RedirectToAction("Index");
+        }
+        
+
+        [HttpGet]
+        public ActionResult PlaceOrder()
+        {
+            //kiểm tra đăng nhập
+            //if (Session["TaiKhoan"] == null || Session["TaiKhoan"].ToString() == "")
+            //{
+            //    return RedirectToAction("Login", "Account");
+            //}
+            var cartitem = Carts;
+            if (cartitem.Count == 0)
+            {
+                TempData["EmptyCart"] = "Giỏ hàng trống. Vui lòng thêm sản phẩm vào giỏ!";
+                return RedirectToAction("Index", "Cart");
+            }           
+            Customer customer = new Customer();
+
+            OrderModels order = new OrderModels
+            {
+                cart = cartitem,
+                customer = customer
+            };
+            
+            return View(order);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult PlaceOrder(IFormCollection f)
+        {
+            Order order = new Order();
+            OrderDetail detail = new OrderDetail();
+            Customer customer = HttpContext.Session.Get<Customer>("username");
+            var cart = Carts;
+            order.CustomerId = customer.Id;
+            order.Receiver = f["Fullname"];
+            order.OrderDate = DateTime.Now;
+            order.Address = f["Address"];
+            order.Amount = (float)CalculateTotal();
+            order.Description = f["Description"];
+            _context.Orders.Add(order);
+            _context.SaveChanges();
+            foreach (var item in cart)
+            {                
+                {
+                    detail.OrderId = order.Id;
+                    detail.ProductId = item.idSach;
+                    detail.Price = item.dThanhtien;
+                    detail.Quantity = item.iSoLuong;
+                    detail.Discount = Discount();
+                };
+                _context.OrderDetails.Add(detail);
+                _context.SaveChanges();
+                HttpContext.Session.Set("GioHang", null);
+            }
+            _context.SaveChanges();            
+            return RedirectToAction("OrderConfirmation", "Cart");
+        }
 
 
+        public ActionResult OrderConfirmation()
+        {
+            return View();
+        }
+        
+        public ActionResult CartItems()
+        {
+            var cart = Carts;
+            ViewBag.TotalItem = cart.Sum(p => p.iSoLuong);
+            ViewBag.Discount = @String.Format("{0:0,0}", Discount());
+            ViewBag.Total = @String.Format("{0:0,0}", CalculateTotal() - Discount());
+            return View();
+        }
+        public ActionResult CartsPartial()
+        {
+            var cartItems = Carts;
+            return PartialView("_CartsPartial", cartItems);
+        }
 
+        private int TotalProduct()
+        {
+            int total = 0;
+            var cartItems = Carts;
+            if (cartItems != null)
+            {
+               foreach(CartItem item in cartItems)
+                {
+                    total += item.iSoLuong;
+                }
+            }
+            return total;
+        }
         private double CalculateTotal()
         {
             double tt = 0;
@@ -111,7 +213,6 @@ namespace BookStore_CNN.Controllers
             }
             return discountAmount;
         }
-
-
+       
     }
 }

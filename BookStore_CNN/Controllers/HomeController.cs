@@ -19,7 +19,7 @@ namespace BookStore_CNN.Controllers
         }
 
         public IActionResult Index()
-        {         
+        {
             var featuredProducts = _context.Products.Where(p => (bool)p.Special).OrderByDescending(p => p.CreatedDate).Take(8).ToList();
 
             var latestProducts = _context.Products.OrderByDescending(p => p.CreatedDate).Take(12).ToList();                                      
@@ -39,10 +39,23 @@ namespace BookStore_CNN.Controllers
         {
             return View();
         }
-
-        public IActionResult Contact()
-        {
+        public IActionResult Contact() {
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult Contact(string name, string email, string content)
+        {
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(content))
+            {
+                TempData["ErrorMessage"] = "Vui lòng nhập thông tin!";
+                return View();
+            }
+            else
+            {
+                TempData["Message"] = "Gửi lời nhắn thành công!";
+                return View();
+            }
         }
 
         public IActionResult Shop(int? page)
@@ -64,6 +77,23 @@ namespace BookStore_CNN.Controllers
             //List<Product> products = _context.Products.Where(x => x.Id == id).OrderBy(x => x.Name).ToList();            
             //return View(products);
         }
+
+        public IActionResult JoinOur()
+        {
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public IActionResult JoinOur(string email)
+        {
+            if(email == null)
+            {
+                TempData["ErrorMessage"] = "Vui lòng nhập email để đăng ký.";
+                return RedirectToAction("Index", "Home");
+            }
+            TempData["Message"] = "Đăng ký nhận thông báo thành công!";
+            return RedirectToAction("Index", "Home");
+        }
+    
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

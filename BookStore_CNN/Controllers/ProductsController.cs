@@ -175,7 +175,7 @@ namespace BookStore_CNN.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-       public IActionResult ProductByCategories(int? loai)
+       public IActionResult ProductByCategories(int? loai, int? page)
         {
             var products = _context.Products.AsQueryable();
             if (loai.HasValue)
@@ -190,9 +190,10 @@ namespace BookStore_CNN.Controllers
                 Image = p.Image ?? "",
                 Price = p.Price ?? 0,
             });
-            return View(result);
-
-
+            int pageSize = 9;
+            int pageNumber = page == null || page < 0 ? 1 : page.Value;            
+            PagedList<ProductVM> lst = new PagedList<ProductVM>(result, pageNumber, pageSize);
+            return View(lst);
         }
 
         public IActionResult Search(string? keyword)

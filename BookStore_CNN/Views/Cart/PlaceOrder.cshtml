@@ -1,20 +1,19 @@
-﻿@* @model IEnumerable<BookStore_CNN.ViewModels.ProductVM> *@
-@using X.PagedList.Mvc.Core;
-@model X.PagedList.IPagedList<BookStore_CNN.ViewModels.ProductVM>
+﻿@model BookStore_CNN.ViewModels.OrderModels
 @{
     Layout = null;
 }
 
+<!-- Các trường nhập liệu và form đặt hàng -->
 <!DOCTYPE html>
+<html lang="zxx">
 
-<html>
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Ogani Template">
     <meta name="keywords" content="Ogani, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Shop</title>
+    <title>Đặt hàng</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
@@ -29,6 +28,7 @@
     <link rel="stylesheet" href="~/TemplateCuss/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="~/TemplateCuss/css/style.css" type="text/css">
 </head>
+
 <body>
     <!-- Page Preloder -->
     <div id="preloder">
@@ -38,7 +38,7 @@
     <!-- Humberger Begin -->
     <div class="humberger__menu__overlay"></div>
     <div class="humberger__menu__wrapper">
-        <div class="humberger__menu__Logo">
+        <div class="humberger__menu__logo">
             <a href="~/"><img src="~/TemplateCuss/img/Logo.png" alt=""></a>
         </div>
         <div class="humberger__menu__cart">
@@ -46,19 +46,19 @@
                 <li><a href="#"><i class="fa fa-heart"></i> </a></li>
                 <li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-bag"></i> </a></li>
             </ul>
-            @* <div class="header__cart__price">Tổng: <span>@ViewBag.Total ₫</span></div> *@
+            @* <div class="header__cart__price">Tổng: <span>@ViewBag.Total đ</span></div> *@
         </div>
         <div class="humberger__menu__widget">
             <div class="header__top__right__auth">
-                <a href="#"><i class="fa fa-user"></i> Đăng Nhập</a>
+                <a href="#"><i class="fa fa-user"></i>Đăng Nhập</a>
             </div>
         </div>
         <nav class="humberger__menu__nav mobile-menu">
             <ul>
-                <li><a href="~/">Tranh chủ</a></li>
-                <li><a href="~/shop-grid.html">Cửa hàng</a></li>
+                <li><a href="~/">Trang chủ</a></li>
+                <li class="active"><a href="~/Home/Shop">Cửa hàng</a></li>
                 <li><a href="~/Home/About">Giới thiệu</a></li>
-                <li class="active"><a href="~/Home/Contact">Liên hệ</a></li>
+                <li><a href="~/Home/Contact">Liên hệ</a></li>
             </ul>
         </nav>
         <div id="mobile-menu-wrap"></div>
@@ -96,7 +96,7 @@
                                 <a href="#"><i class="fa fa-pinterest-p"></i></a>
                             </div>
                             <div class="header__top__right__auth">
-                                <a href="#"><i class="fa fa-user"></i> Đăng nhập</a>
+                                <a href="#"><i class="fa fa-user"></i>Đăng Nhập</a>
                             </div>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-3">
-                    <div class="header__Logo">
+                    <div class="header__logo">
                         <a href="~/"><img src="~/TemplateCuss/img/Logo.png" alt=""></a>
                     </div>
                 </div>
@@ -155,7 +155,7 @@
                     <div class="hero__search">
                         <div class="hero__search__form">
                             <form asp-controller="Products" asp-action="Search">
-                                <input type="text" name="keyword" placeholder="Nhập tên sách">
+                                <input type="text" placeholder="Nhập tên sách...">
                                 <button type="submit" class="site-btn">TÌM KIẾM</button>
                             </form>
                         </div>
@@ -175,15 +175,15 @@
     </section>
     <!-- Hero Section End -->
     <!-- Breadcrumb Section Begin -->
-    <section class="breadcrumb-section set-bg" data-setbg="/TemplateCuss/img/breadcrumb1.jpg">
+    <section class="breadcrumb-section set-bg" data-setbg="/TemplateCuss/img/breadcrumb.jpg">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="breadcrumb__text">
-                        <h2>BCARAT SHOP</h2>
+                        <h2>ĐẶT HÀNG</h2>
                         <div class="breadcrumb__option">
                             <a href="~/">Trang chủ</a>
-                            <span>Cửa hàng</span>
+                            <span>Đặt hàng</span>
                         </div>
                     </div>
                 </div>
@@ -191,49 +191,79 @@
         </div>
     </section>
     <!-- Breadcrumb Section End -->
-    <!-- Product Section Begin -->
-    <section class="product spad">
+    @if (!string.IsNullOrEmpty(TempData["ErrorOrder"] as string))
+    {
+        <div class="alert alert-danger">@TempData["ErrorOrder"]</div>
+    }
+    @using BookStore_CNN.Models
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 col-md-5">
-                    <div class="sidebar">
-                        <div class="sidebar__item">
-                            <h4>Danh mục sách</h4>
-                            <ul>
-                                @await Component.InvokeAsync("CategoriesMenu")
-                            </ul>
-                        </div>                        
-                    </div>                   
+                <div class="col-lg-12">
                 </div>
-                <div class="col-lg-9 col-md-7">                    
+            </div>
+            <div class="checkout__form">
+                <h4>Thông Tin Chi Tiết</h4>
+                <form asp-controller="Cart" asp-action="PlaceOrder" method="post">
                     <div class="row">
-                        @foreach (var item in Model)
-                        {
-                            <div class="col-lg-4 col-md-6 col-sm-6">
-                                <div class="product__item">
-                                    <div class="product__item__pic set-bg" data-setbg=@Url.Content("../BookImage/" + item.Image)>
-                                        <ul class="product__item__pic__hover">
-                                            <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                            <li><a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@item.Id" asp-route-qty="1"><i class="fa fa-shopping-cart"></i></a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="product__item__text">
-                                        <h6><a asp-controller="Products" asp-action="ProductDetails" asp-route-idSP="@item.Id">@item.Name</a></h6>
-                                        <h5>@String.Format("{0:0,0}", item.Price)đ</h5>
+                        <div class="col-lg-6 col-md-4">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="@Model.customer.Fullname" class="control-label"></label>
+                                <input asp-for="@Model.customer.Fullname" class="form-control" name="name"/>
+                                <span asp-validation-for="@Model.customer.Fullname" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@Model.customer.Address" class="control-label"></label>
+                                <input asp-for="@Model.customer.Address" class="form-control" name="address"/>
+                                <span asp-validation-for="@Model.customer.Address" class="text-danger"></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="@Model.customer.Phone" class="control-label"></label>
+                                        <input asp-for="@Model.customer.Phone" class="form-control" name="phone"/>
+                                        <span asp-validation-for="@Model.customer.Phone" class="text-danger"></span>
                                     </div>
                                 </div>
-                            </div>                           
-                        }
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="@Model.customer.Email" class="control-label"></label>
+                                        <input asp-for="@Model.customer.Email" class="form-control" name="email"/>
+                                        <span asp-validation-for="@Model.customer.Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkout__input">
+                                <div class="form-group">
+                                    <label class="control-label">Ghi chú (nếu có)</label>
+                                    <input type="text" name="Description"></input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-8">
+                            <div class="checkout__order">
+                                <h4>Đơn Hàng</h4>
+                                <div class="checkout__order__products">Sản phẩm <span>Thành tiền</span></div>
+                                @foreach (var item in Model.cart)
+                                {
+                                    <ul>
+                                        <li>@item.tenSach <span>@String.Format("{0:0,0}", item.dThanhtien)đ</span></li>
+                                    </ul>
+                                }
+                                <div class="checkout__order__subtotal">Thành tiền <span>@ViewBag.TotalPrv đ</span></div>
+                                <div class="checkout__order__total">Giảm giá <span>@ViewBag.Discount đ</span></div>
+                                <div class="checkout__order__total">Tổng tiền <span>@ViewBag.Total đ</span></div>
+                                <button type="submit" class="site-btn" asp-controller="Cart" asp-action="OrderConfirmation">HOÀN TẤT ĐẶT HÀNG</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="product__pagination">
-                        @Html.PagedListPager(Model, page => Url.Action("Shop", new { page = page }))
-                    </div>                
-                </div>
+                </form>
             </div>
         </div>
     </section>
-    <!-- Product Section End -->
+    <!-- Checkout Section End -->
     <!-- Footer Section Begin -->
     @await Html.PartialAsync("_FrontEndFooter")
     <!-- Footer Section End -->
@@ -247,7 +277,8 @@
     <script src="~/TemplateCuss/js/owl.carousel.min.js"></script>
     <script src="~/TemplateCuss/js/main.js"></script>
 
-</body>
-</html>
 
-   
+
+</body>
+
+</html>

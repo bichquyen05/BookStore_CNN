@@ -42,10 +42,10 @@
         </div>
         <div class="humberger__menu__cart">
             <ul>
-                <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+                <li><a href="#"><i class="fa fa-heart"></i> <span></span></a></li>
+                <li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-bag"></i> <span></span></a></li>
             </ul>
-            <div class="header__cart__price">item: <span>$150.00</span></div>
+            @* <div class="header__cart__price">Tổng: <span>@ViewBag.Total ₫</span></div> *@
         </div>
         <div class="humberger__menu__widget">            
             <div class="header__top__right__auth">
@@ -123,9 +123,9 @@
                     <div class="header__cart">
                         <ul>
                             <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                            <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+                            <li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-bag"></i></a></li>
                         </ul>
-                        <div class="header__cart__price">item: <span>$150.00</span></div>
+                        @* <div class="header__cart__price">Tổng: <span>@ViewBag.Total ₫</span></div> *@
                     </div>
                 </div>
             </div>
@@ -232,34 +232,7 @@
             </div>
         </div>
     </section>
-    <!-- Contact Section End -->   
-    <!-- Contact Form Begin -->
-    <div class="contact-form spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="contact__form__title">
-                        <h2>Leave Message</h2>
-                    </div>
-                </div>
-            </div>
-            <form action="#">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6">
-                        <input type="text" placeholder="Your name">
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <input type="text" placeholder="Your Email">
-                    </div>
-                    <div class="col-lg-12 text-center">
-                        <textarea placeholder="Your message"></textarea>
-                        <button type="submit" class="site-btn">SEND MESSAGE</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    <!-- Contact Form End -->
+    <!-- Contact Section End -->       
     <!-- Footer Section Begin -->
     @await Html.PartialAsync("_FrontEndFooter")
     <!-- Footer Section End -->

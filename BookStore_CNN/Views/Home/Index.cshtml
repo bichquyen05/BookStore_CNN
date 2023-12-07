@@ -1,10 +1,10 @@
 ﻿@using X.PagedList.Mvc.Core;
+@using Microsoft.AspNetCore.Mvc
 @model List<Product>
 @{
     ViewData["Title"] = "Home Page";
     Layout = null;
 }
-
     <!DOCTYPE html>
     <html lang="zxx">
 
@@ -44,10 +44,10 @@
             </div>
             <div class="humberger__menu__cart">
                 <ul>
-                    <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                    <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+                <li><a href="#"><i class="fa fa-heart"></i> </a></li>
+                <li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-bag"></i> </a></li>
                 </ul>
-                <div class="header__cart__price">item: <span>$150.00</span></div>
+            @* <div class="header__cart__price">Tổng: <span>@ViewBag.Total</span></div> *@
             </div>
             <div class="humberger__menu__widget">                
                 <div class="header__top__right__auth">
@@ -124,9 +124,10 @@
                     <div class="col-lg-3">
                         <div class="header__cart">
                             <ul>
-                                <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+                                <li><a href="#"><i class="fa fa-heart"></i> </a></li>
+                                <li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-bag"></i> </a></li>
                             </ul>
+                            <div class="header__cart__price"><span></span></div>
                         </div>
                     </div>
                 </div>
@@ -175,7 +176,7 @@
                                 <span>CARATSHOP</span>
                                 <h2>World <br />Book Day</h2>
                                 <p>Luôn cập nhật các loại sách mới</p>
-                                <a href="#" class="primary-btn">MUA NGAY</a>
+                                <a asp-controller="Home" asp-action="Shop" class="primary-btn">MUA NGAY</a>
                             </div>
                         </div>
                     </div>
@@ -227,16 +228,16 @@
                         <div class="section-title">
                             <h2>SẢN PHẨM NỔI BẬT</h2>
                         </div>
-                        <div class="featured__controls">
+                        @* <div class="featured__controls">
                             <ul>
                                 <li class="active" data-filter="*">Tất cả</li>
-                                <li data-filter=".vanhocnghethua">Văn học - Nghệ thuật</li>
+                                <li data-filter=".vanhocnghethuat">Văn học - Nghệ thuật</li>
                                 <li data-filter=".tamlykynang">Tâm lý - Kỹ năng</li>
                                 <li data-filter=".hinhsutrinhtham">Hình sự - Trinh thám</li>
                                 <li data-filter=".khoahoccongnghe">Khoa học - Công nghệ</li>
                                 <li data-filter=".langmanngontinh">Lãng mạn - Ngôn tình</li>
                             </ul>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
                 <div class="row featured__filter">
@@ -275,12 +276,12 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6">
                         <div class="banner__pic">
-                            <img src="../TemplateCuss/img/banner/banner-1.jpg" alt="">
+                            <img src="../TemplateCuss/img/banner/banner1.PNG" alt="">
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6">
                         <div class="banner__pic">
-                            <img src="../TemplateCuss/img/banner/banner-2.jpg" alt="">
+                            <img src="../TemplateCuss/img/banner/banner2.PNG" alt="">
                         </div>
                     </div>
                 </div>
