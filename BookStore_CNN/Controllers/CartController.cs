@@ -3,6 +3,7 @@ using BookStore_CNN.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace BookStore_CNN.Controllers
 {
@@ -157,24 +158,24 @@ namespace BookStore_CNN.Controllers
         }
 
 
-        public ActionResult OrderConfirmation()
+        public ActionResult OrderConfirmation(IFormCollection f)
         {
+            if (string.IsNullOrEmpty(f["Fullname"])|| string.IsNullOrEmpty(f["Address"])|| string.IsNullOrEmpty(f["Phone"]))
+            {
+                TempData["ErrorOrder"] = "Vui lòng điền đầy đủ thông tin!";
+                return RedirectToAction("PlaceOrder");
+            }
             return View();
         }
         
-        public ActionResult CartItems()
+        public ActionResult _CartItems()
         {
             var cart = Carts;
             ViewBag.TotalItem = cart.Sum(p => p.iSoLuong);
             ViewBag.Discount = @String.Format("{0:0,0}", Discount());
             ViewBag.Total = @String.Format("{0:0,0}", CalculateTotal() - Discount());
-            return View();
-        }
-        public ActionResult CartsPartial()
-        {
-            var cartItems = Carts;
-            return PartialView("_CartsPartial", cartItems);
-        }
+            return PartialView("_CartView");
+        }        
 
         private int TotalProduct()
         {

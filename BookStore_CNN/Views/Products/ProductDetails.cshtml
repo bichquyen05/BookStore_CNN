@@ -48,11 +48,7 @@
             </ul>
             @* <div class="header__cart__price">Tổng: <span> @ViewBag.Total ₫</span></div> *@
         </div>
-        <div class="humberger__menu__widget">            
-            <div class="header__top__right__auth">
-                <a href="#"><i class="fa fa-user"></i>Đăng Nhập</a>
-            </div>
-        </div>
+        @await Html.PartialAsync("_HeaderMobile")
         <nav class="humberger__menu__nav mobile-menu">
             <ul>
                 <li class="active"><a href="~/">Trang chủ</a></li>
@@ -77,32 +73,7 @@
     <!-- Humberger End -->
     <!-- Header Section Begin -->
     <header class="header">
-        <div class="header__top">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="header__top__left">
-                            <ul>
-                                <li><i class="fa fa-envelope"></i> carat@colorlib.com</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="header__top__right">
-                            <div class="header__top__right__social">
-                                <a href="#"><i class="fa fa-facebook"></i></a>
-                                <a href="#"><i class="fa fa-twitter"></i></a>
-                                <a href="#"><i class="fa fa-linkedin"></i></a>
-                                <a href="#"><i class="fa fa-pinterest-p"></i></a>
-                            </div>                            
-                            <div class="header__top__right__auth">
-                                <a href="#"><i class="fa fa-user"></i>Đăng Nhập</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @await Html.PartialAsync("_Header")
         <div class="container">
             <div class="row">
                 <div class="col-lg-3">
@@ -225,8 +196,7 @@
                                 </div>
                             </div>
                             <button class="primary-btn">Thêm vào giỏ hàng</button>                            
-                        </form> 
-                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@Model.Id" asp-route-qty="1" class="primary-btn">Mua ngay</a>
+                        </form>                         
                         <ul>
                             <li><b>Tác giả</b> <span>@Model.TacGia</span></li>
                             <li><b>Thể loại</b> <span>@ViewBag.loai</span></li>
@@ -289,12 +259,13 @@
                                     <ul class="product__item__pic__hover">
                                         <li><a href="#"><i class="fa fa-heart"></i></a></li>
                                         <li><a href="#"><i class="fa fa-retweet"></i></a></li>
-                                        <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                                        <li><a asp-controller ="Cart" asp-action="AddToCart" asp-route-id="@item.Id" asp-route-qty="1"><i class="fa fa-shopping-cart"></i></a>
+                                    </li>
                                     </ul>
                                 </div>
                                 <div class="product__item__text">
                                     <h6><a asp-controller="Products" asp-action="ProductDetails" asp-route-idSP="@item.Id">@item.Name</a></h6>
-                                    <h5>@item.Price</h5>
+                                    <h5>@String.Format("{0:0,0}", item.Price)đ</h5>
                                 </div>
                             </div>
                         </div>
