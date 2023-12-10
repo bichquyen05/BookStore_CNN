@@ -1,0 +1,7 @@
+﻿@model BookStore_CNN.ViewModels.CartItemModels
+<ul>
+    <li><a href="#"><i class="fa fa-heart"></i> </a></li>
+    <li><a asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-bag"></i><span>@Model.Quantity</span> </a></li>
+</ul>
+<div class="header__cart__price">Tổng: <span>@String.Format("{0:0,0}", Model.Total)đ
+</span></div>

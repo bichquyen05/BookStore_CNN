@@ -1,4 +1,5 @@
-﻿using BookStore_CNN.Models;
+﻿using BookStore_CNN.Helpers;
+using BookStore_CNN.Models;
 using BookStore_CNN.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,23 +14,24 @@ namespace BookStore_CNN.Controllers
         public CartController (BookStoreCaratContext context)
         {
             _context = context;
-        }        
+        }
+
+        //public List<CartItem> Carts => HttpContext.Session.Get<List<CartItem>>(CartItemSetting.CART_KEY) ?? new List<CartItem>();
 
         public List<CartItem> Carts
         {
             get
-            {                
-                var data = HttpContext.Session.Get<List<CartItem>>("GioHang") ?? new List<CartItem>();
+            {
+                var data = HttpContext.Session.Get<List<CartItem>>(CartItemSetting.CART_KEY) ?? new List<CartItem>();
                 ViewBag.TotalItem = data.Sum(p => p.iSoLuong);
                 ViewBag.TotalPrv = @String.Format("{0:0,0}", CalculateTotal());
                 ViewBag.Discount = @String.Format("{0:0,0}", Discount());
-                ViewBag.Total = @String.Format("{0:0,0}", CalculateTotal() - Discount());                
+                ViewBag.Total = @String.Format("{0:0,0}", CalculateTotal() - Discount());
                 return data;
             }
         }
         public IActionResult Index()
-        {
-            ViewBag.TongSoLuong = TotalProduct();
+        {            
             return View(Carts);
         }
 
@@ -58,7 +60,7 @@ namespace BookStore_CNN.Controllers
                     gioHang.Add(item);
                 }
             }
-            HttpContext.Session.Set("GioHang", gioHang);
+            HttpContext.Session.Set(CartItemSetting.CART_KEY, gioHang);
             return RedirectToAction("Index");
         }
                 
@@ -71,7 +73,7 @@ namespace BookStore_CNN.Controllers
                 var product = _context.Products.SingleOrDefault(p => p.Id == itemid);
                 gioHang.Remove(item);
             }
-            HttpContext.Session.Set("GioHang", gioHang);
+            HttpContext.Session.Set(CartItemSetting.CART_KEY, gioHang);
             return RedirectToAction("Index");
         }
 
@@ -87,7 +89,7 @@ namespace BookStore_CNN.Controllers
                     item.iSoLuong = quantity;
                 }
             }
-            HttpContext.Session.Set("GioHang", gioHang);
+            HttpContext.Session.Set(CartItemSetting.CART_KEY, gioHang);
             return RedirectToAction("Index");
         }
 
@@ -95,14 +97,16 @@ namespace BookStore_CNN.Controllers
         {
             var gioHang = Carts;
             gioHang.Clear();
-            HttpContext.Session.Set("GioHang", gioHang);
+            HttpContext.Session.Set(CartItemSetting.CART_KEY, gioHang);
             return RedirectToAction("Index");
         }
         
-
+        /**
+         * Có thể thay đổi hoặc tạo mới 1 PlaceOrder khác phù hợp hơn nha!!
+         * **/
         [HttpGet]
         public ActionResult PlaceOrder()
-        {
+        {             
             //kiểm tra đăng nhập
             //if (Session["TaiKhoan"] == null || Session["TaiKhoan"].ToString() == "")
             //{
@@ -132,50 +136,41 @@ namespace BookStore_CNN.Controllers
             OrderDetail detail = new OrderDetail();
             Customer customer = HttpContext.Session.Get<Customer>("username");
             var cart = Carts;
-            order.CustomerId = customer.Id;
-            order.Receiver = f["Fullname"];
+            //order.CustomerId = customer.Id;
+            order.Receiver = f["name"];
             order.OrderDate = DateTime.Now;
-            order.Address = f["Address"];
+            //thêm thuộc tính Phone vào bảng Order để lưu
+            //order.Phone = f["phone"];
+            order.Address = f["address"];
             order.Amount = (float)CalculateTotal();
-            order.Description = f["Description"];
+            order.Description = f["description"];
             _context.Orders.Add(order);
             _context.SaveChanges();
             foreach (var item in cart)
-            {                
-                {
-                    detail.OrderId = order.Id;
-                    detail.ProductId = item.idSach;
-                    detail.Price = item.dThanhtien;
-                    detail.Quantity = item.iSoLuong;
-                    detail.Discount = Discount();
-                };
+            {
+                detail.OrderId = order.Id;
+                detail.ProductId = item.idSach;
+                detail.Price = item.dThanhtien;
+                detail.Quantity = item.iSoLuong;
+                detail.Discount = Discount();
                 _context.OrderDetails.Add(detail);
                 _context.SaveChanges();
-                HttpContext.Session.Set("GioHang", null);
             }
-            _context.SaveChanges();            
+            _context.SaveChanges();
             return RedirectToAction("OrderConfirmation", "Cart");
         }
 
 
         public ActionResult OrderConfirmation(IFormCollection f)
         {
-            if (string.IsNullOrEmpty(f["Fullname"])|| string.IsNullOrEmpty(f["Address"])|| string.IsNullOrEmpty(f["Phone"]))
+            if (string.IsNullOrEmpty(f["name"]) || string.IsNullOrEmpty(f["address"]) || string.IsNullOrEmpty(f["phone"]) || string.IsNullOrEmpty(f["email"]))
             {
                 TempData["ErrorOrder"] = "Vui lòng điền đầy đủ thông tin!";
                 return RedirectToAction("PlaceOrder");
             }
+            //set giỏ hàng bằng null trước khi trả về view
             return View();
-        }
-        
-        public ActionResult _CartItems()
-        {
-            var cart = Carts;
-            ViewBag.TotalItem = cart.Sum(p => p.iSoLuong);
-            ViewBag.Discount = @String.Format("{0:0,0}", Discount());
-            ViewBag.Total = @String.Format("{0:0,0}", CalculateTotal() - Discount());
-            return PartialView("_CartView");
-        }        
+        }            
 
         private int TotalProduct()
         {
@@ -193,7 +188,7 @@ namespace BookStore_CNN.Controllers
         private double CalculateTotal()
         {
             double tt = 0;
-            List<CartItem> data = HttpContext.Session.Get<List<CartItem>>("GioHang");
+            List<CartItem> data = HttpContext.Session.Get<List<CartItem>>(CartItemSetting.CART_KEY);
             if (data != null)
             {
                 foreach (CartItem item in data)
